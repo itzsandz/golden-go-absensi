@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Golden Go Staff Absensi</title>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      /* Theme Variables: Sandz Store Dark Neon Aesthetic */
+      --bg-gradient: radial-gradient(circle at 50% -20%, #1e1b4b 0%, #0b1120 60%, #050814 100%);
+      --bg-color: #0b1120;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(0, 242, 254, 0.2);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-cyan: #00f2fe;
+      --accent-purple: #7928ca;
+      --accent-glow: rgba(0, 242, 254, 0.4);
+      --neon-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #7928ca 100%);
+      --input-bg: rgba(30, 41, 59, 0.7);
+      --input-border: rgba(255, 255, 255, 0.1);
+      --shadow-color: rgba(0, 242, 254, 0.15);
+      --receipt-bg: #0f172a;
+    }
+
+    /* Light Theme Override */
+    [data-theme="light"] {
+      --bg-gradient: radial-gradient(circle at 50% -20%, #e0e7ff 0%, #f1f5f9 60%, #cbd5e1 100%);
+      --bg-color: #f1f5f9;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-border: rgba(121, 40, 202, 0.25);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent-cyan: #0284c7;
+      --accent-purple: #7c3aed;
+      --accent-glow: rgba(124, 58, 237, 0.3);
+      --neon-gradient: linear-gradient(135deg, #0284c7 0%, #3b82f6 50%, #7c3aed 100%);
+      --input-bg: rgba(241, 245, 249, 0.9);
+      --input-border: rgba(0, 0, 0, 0.15);
+      --shadow-color: rgba(124, 58, 237, 0.15);
+      --receipt-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 40px;
+    }
+
+    /* Navbar Header */
+    header {
+      width: 100%;
+      max-width: 1000px;
+      padding: 16px 24px;
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px var(--shadow-color);
+      z-index: 100;
+      position: relative;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid var(--accent-cyan);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      background: var(--neon-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Menu Titik Tiga (3-Dots Menu) */
+    .menu-container {
+      position: relative;
+    }
+
+    .btn-dots {
+      background: transparent;
+      border: 1px solid var(--input-border);
+      color: var(--text-main);
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-dots:hover {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      right: 0;
+      top: 50px;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      width: 180px;
+      padding: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 200;
+    }
+
+    .dropdown-menu.show {
+      display: flex;
+    }
+
+    .dropdown-item {
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(0, 242, 254, 0.15);
+      color: var(--accent-cyan);
+    }
+
+    /* Main Layout */
+    main {
+      width: 100%;
+      max-width: 650px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    /* Card Container */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 12px 40px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 2px;
+      background: var(--neon-gradient);
+    }
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .card-header h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .card-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 14px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    /* Neon Button */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--neon-gradient);
+      border: none;
+      border-radius: 14px;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      opacity: 0.95;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px var(--accent-glow);
+    }
+
+    /* Lock Screen View (Outside 18:00 - 23:00) */
+    .lock-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .lock-icon {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      background: var(--neon-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .lock-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .lock-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid var(--accent-cyan);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    /* Invoice Receipt View */
+    .receipt-container {
+      display: none;
+    }
+
+    .receipt-card {
+      background: var(--receipt-bg);
+      border: 2px dashed var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .receipt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--input-border);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .receipt-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .receipt-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+    }
+
+    .receipt-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .receipt-badge {
+      background: #10b981;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .receipt-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+      background: var(--input-bg);
+      padding: 16px;
+      border-radius: 12px;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meta-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .meta-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 2px;
+    }
+
+    .activity-box {
+      background: var(--input-bg);
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+
+    .activity-box h4 {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .activity-list {
+      list-style: none;
+    }
+
+    .activity-list li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .activity-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--accent-cyan);
+      font-weight: bold;
+    }
+
+    .receipt-footer-note {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 15px;
+      font-style: italic;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header>
+    <div class="brand-section">
+      <img src="https://i.postimg.cc/PfzxS9Br/Golden-Go-New.jpg" alt="Golden Go Logo" class="brand-logo" />
+      <h1 class="brand-title">Golden Go Staff Absensi</h1>
+    </div>
+
+    <div class="menu-container">
+      <button class="btn-dots" id="menuToggle" aria-label="Menu Opsi">
+        <i class="fa-solid font-awesome fa-ellipsis-vertical"></i>
+      </button>
+      <div class="dropdown-menu" id="dropdownMenu">
+        <button class="dropdown-item" id="themeToggleBtn">
+          <i class="fa-solid fa-moon"></i> Ganti Mode Warna
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main>
+    <div class="glass-card">
+      
+      <!-- 1. LOCK SCREEN (TAMPIL SAAT DI LUAR JAM 18:00 - 23:00 WIB) -->
+      <div class="lock-screen" id="lockScreen">
+        <div class="lock-icon">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+        <h3 class="lock-title">ABSENSI SEDANG DITUTUP</h3>
+        <p class="lock-desc">
+          Formulir absensi Golden Go Staff hanya dibuka pada jam operasional harian:<br>
+          <strong>18:00 WIB s/d 23:00 WIB</strong>.
+        </p>
+        <div class="time-badge">
+          <i class="fa-regular fa-clock"></i>
+          <span id="currentTimeDisplay">00:00:00 WIB</span>
+        </div>
+      </div>
+
+      <!-- 2. FORMULIR ABSENSI (TAMPIL HANYA PADA JAM 18:00 - 23:00 WIB) -->
+      <div id="formContainer">
+        <div class="card-header">
+          <h2>Form Aktivitas Staf</h2>
+          <p>Silakan isi detail laporan kerja harian Anda</p>
+        </div>
+
+        <form id="attendanceForm">
+          <div class="form-group">
+            <label for="staffName">Nama Staf / Admin</label>
+            <input type="text" id="staffName" class="form-control" placeholder="Masukkan nama lengkap Anda" required />
+          </div>
+
+          <div class="form-group">
+            <label for="staffRank">Rank / Jabatan</label>
+            <select id="staffRank" class="form-control" required>
+              <option value="" disabled selected>-- Pilih Rank / Jabatan --</option>
+              <option value="Management">Management</option>
+              <option value="Senior Admin">Senior Admin</option>
+              <option value="Admin Store">Admin Store</option>
+              <option value="Customer Service">Customer Service</option>
+              <option value="Moderator">Moderator</option>
+              <option value="Staff Operational">Staff Operational</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="activityLog">Kegiatan Hari Ini</label>
+            <textarea id="activityLog" class="form-control" placeholder="Contoh:&#10;- Melayani 15 pesanan pelanggan&#10;- Update stok produk harian&#10;- Rekapitulasi transaksi sore" required></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Submit & Generate Invoice
+          </button>
+        </form>
+      </div>
+
+      <!-- 3. STRUK / INVOICE RESULT (TAMPIL SETELAH FORM DISUBMIT) -->
+      <div class="receipt-container" id="receiptContainer">
+        <div class="receipt-card">
+          <div class="receipt-header">
+            <div class="receipt-brand">
+              <img src="https://i.postimg.cc/PfzxS9Br/Golden-Go-New.jpg" alt="Logo" class="receipt-logo" />
+              <div>
+                <div class="receipt-title">GOLDEN GO STAFF</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Daily Activity Report</div>
+              </div>
+            </div>
+            <span class="receipt-badge">VERIFIED</span>
+          </div>
+
+          <div class="receipt-meta">
+            <div class="meta-item">
+              <span class="meta-label">ID LAPORAN</span>
+              <span class="meta-value" id="resRefNo">#GGS-00000</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">WAKTU SUBMIT</span>
+              <span class="meta-value" id="resTime">00:00 WIB</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">NAMA STAF</span>
+              <span class="meta-value" id="resName">-</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">RANK / JABATAN</span>
+              <span class="meta-value" id="resRank">-</span>
+            </div>
+          </div>
+
+          <div class="activity-box">
+            <h4>RINCIAN KEGIATAN:</h4>
+            <ul class="activity-list" id="resActivities">
+              <!-- Dynamically Populated -->
+            </ul>
+          </div>
+
+          <div class="receipt-footer-note">
+            📸 Silakan screenshot tampilan struk di atas dan kirimkan ke Admin.
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-secondary" id="btnEdit">
+            <i class="fa-solid fa-pen-to-square"></i> Edit Data
+          </button>
+          <button class="btn-secondary" id="btnNew">
+            <i class="fa-solid fa-rotate-right"></i> Form Baru
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // ==========================================
+    // 1. PENGATURAN JAM OPERASIONAL (18:00 - 23:00)
+    // ==========================================
+    const START_HOUR = 18; // 18:00 WIB
+    const END_HOUR = 23;   // 23:00 WIB
+
+    function checkOperatingHours() {
+      const now = new Date();
+      const currentHour = now.getHours();
+
+      // Format Jam Digital Real-time
+      const hoursStr = String(now.getHours()).padStart(2, '0');
+      const minsStr = String(now.getMinutes()).padStart(2, '0');
+      const secsStr = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('currentTimeDisplay').innerText = `${hoursStr}:${minsStr}:${secsStr} WIB`;
+
+      const lockScreen = document.getElementById('lockScreen');
+      const formContainer = document.getElementById('formContainer');
+
+      // Cek apakah waktu saat ini di luar jam operasional
+      if (currentHour < START_HOUR || currentHour >= END_HOUR) {
+        lockScreen.style.display = 'block';
+        formContainer.style.display = 'none';
+      } else {
+        lockScreen.style.display = 'none';
+        if (document.getElementById('receiptContainer').style.display !== 'block') {
+          formContainer.style.display = 'block';
+        }
+      }
+    }
+
+    // Jalankan pengecekan jam setiap 1 detik
+    setInterval(checkOperatingHours, 1000);
+    checkOperatingHours();
+
+    // ==========================================
+    // 2. TOGGLE DROPDOWN & THEME (DARK / LIGHT)
+    // ==========================================
+    const menuToggle = document.getElementById('menuToggle');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle('show');
+    });
+
+    document.addEventListener('click', () => {
+      dropdownMenu.classList.remove('show');
+    });
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      if (currentTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    });
+
+    // ==========================================
+    // 3. LOGIKA FORM ABSENSI & INVOICE GENERATOR
+    // ==========================================
+    const attendanceForm = document.getElementById('attendanceForm');
+    const formContainer = document.getElementById('formContainer');
+    const receiptContainer = document.getElementById('receiptContainer');
+
+    attendanceForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('staffName').value.trim();
+      const rank = document.getElementById('staffRank').value;
+      const activityText = document.getElementById('activityLog').value.trim();
+
+      // Buat Nomor Referensi Unik
+      const now = new Date();
+      const dateStr = now.getFullYear().toString() +
+                      String(now.getMonth() + 1).padStart(2, '0') +
+                      String(now.getDate()).padStart(2, '0');
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      const refNo = `#GGS-${dateStr}-${randomNum}`;
+
+      // Format Waktu Submit
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} WIB`;
+
+      // Render Data ke Struk Invoice
+      document.getElementById('resRefNo').innerText = refNo;
+      document.getElementById('resTime').innerText = timeStr;
+      document.getElementById('resName').innerText = name;
+      document.getElementById('resRank').innerText = rank;
+
+      // Render Daftar Kegiatan
+      const activitiesUl = document.getElementById('resActivities');
+      activitiesUl.innerHTML = '';
+      const lines = activityText.split('\n');
+      lines.forEach(line => {
+        const cleanLine = line.replace(/^[-*•]\s*/, '').trim();
+        if (cleanLine.length > 0) {
+          const li = document.createElement('li');
+          li.innerText = cleanLine;
+          activitiesUl.appendChild(li);
+        }
+      });
+
+      // Transisi Tampilan dari Form ke Struk Invoice
+      formContainer.style.display = 'none';
+      receiptContainer.style.display = 'block';
+    });
+
+    // Tombol Edit Data
+    document.getElementById('btnEdit').addEventListener('click', () => {
+      receiptContainer.style.display = 'none';
+      formContainer.style.display = 'block';
+    });
+
+    // Tombol Form Baru
+    document.getElementById('btnNew').addEventListener('click', () => {
+      attendanceForm.reset();
+      receiptContainer.style.display = 'none';
+      formContainer.style.display = 'block';
+    });
+  </script>
+</body>
+  </html>
